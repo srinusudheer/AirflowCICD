@@ -27,7 +27,7 @@ with DAG(
     # Fetch environment variables
     env = Variable.get("env", default_var="dev")
     gcs_bucket = Variable.get("gcs_bucket", default_var="airflow_projects_bucket")
-    bq_project = Variable.get("bq_project", default_var="mythic-aloe-457912-d5")
+    bq_project = Variable.get("bq_project", default_var="plucky-climate-458008-u8")
     bq_dataset = Variable.get("bq_dataset", default_var=f"flight_data_{env}")
     tables = Variable.get("tables", deserialize_json=True)
 
@@ -70,9 +70,9 @@ with DAG(
         },
         "environment_config": {
             "execution_config": {
-                "service_account": "715970340101-compute@developer.gserviceaccount.com",
-                "network_uri": "projects/mythic-aloe-457912-d5/global/networks/default",
-                "subnetwork_uri": "projects/mythic-aloe-457912-d5/regions/us-central1/subnetworks/default",
+                "service_account": "789003181755-compute@developer.gserviceaccount.com",
+                "network_uri": "projects/plucky-climate-458008-u8/global/networks/default",
+                "subnetwork_uri": "projects/plucky-climate-458008-u8/regions/us-central1/subnetworks/default",
             }
         },
     }
@@ -81,7 +81,7 @@ with DAG(
         task_id="run_spark_job_on_dataproc_serverless",
         batch=batch_details,
         batch_id=batch_id,
-        project_id="mythic-aloe-457912-d5",
+        project_id="plucky-climate-458008-u8",
         region="us-central1",
         gcp_conn_id="google_cloud_default",
     )
