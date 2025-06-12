@@ -1,0 +1,84 @@
+name: Airflow Flight Booking CICD
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  upload-to-dev:
+    if: github.ref == 'refs/heads/dev'  # 🛠️ FIX: spacing around `==`
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code  # 🛠️ FIX: this line was commented out improperly
+        uses: actions/checkout@v3  # 🛠️ FIX: typo — should be `actions`, not `action`
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Upload variable JSON to GCS
+        run: |
+          gsutil cp variables/dev/variables.json gs://us-central1-airflow-dev-39429e7e-bucket/data/dev/variables.json
+
+      - name: Import variables into Airflow-dev
+        run: |
+          gcloud composer environments run airflow-dev \
+            --location us-central1 \
+            variables import -- /home/airflow/gcs/data/dev/variables.json  # 🛠️ FIX: space after `--`
+
+      - name: Upload Spark Job to GCS
+        run: |
+          gsutil cp spark_job/spark_transformation_job.py gs://airflow_projects_bucket/flight_booking_analysis/spark-job
+
+      - name: Upload Airflow DAG to DEV
+        run: |
+          gcloud composer environments storage dags import \
+            --environment airflow-dev \
+            --location us-central1 \
+            --source airflow_job/airflow_job.py
+
+  upload-to-prod:
+    if: github.ref == 'refs/heads/main'  # 🛠️ FIX: spacing around `==`
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Upload variable JSON to GCS
+        run: |
+          gsutil cp variables/prod/variables.json gs://us-central1-airflow-prod-e5e3588d-bucket/data/prod/variables.json
+
+      - name: Import variables into Airflow-prod  # 🛠️ FIX: dev → prod
+        run: |
+          gcloud composer environments run airflow-prod \
+            --location us-central1 \
+            variables import -- /home/airflow/gcs/data/prod/variables.json  # 🛠️ FIX: space after `--`
+
+      - name: Upload Spark Job to GCS
+        run: |
+          gsutil cp spark_job/spark_transformation_job.py gs://airflow_projects_bucket/flight_booking_analysis/spark-job
+
+      - name: Upload Airflow DAG to PROD  # 🛠️ FIX: dev → prod
+        run: |
+          gcloud composer environments storage dags import \
+            --environment airflow-prod \
+            --location us-central1 \
+            --source airflow_job/airflow_job.py
