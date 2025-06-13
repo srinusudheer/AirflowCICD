@@ -86,5 +86,5 @@ with DAG(
         gcp_conn_id="google_cloud_default",
     )
 
-    # Task Dependencies changes the code here. we have occurred issue with re-uploading
+    # Task Dependencies changes the code here. we have occurred issue with re-uploading coz of gcp outage.
     file_sensor >> pyspark_task
