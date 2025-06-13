@@ -26,8 +26,8 @@ with DAG(
 
     # Fetch environment variables
     env = Variable.get("env", default_var="dev")
-    gcs_bucket = Variable.get("gcs_bucket", default_var="airflow_projects_bucket")
-    bq_project = Variable.get("bq_project", default_var="plucky-climate-458008-u8")
+    gcs_bucket = Variable.get("gcs_bucket", default_var="airflow_projects_buckets")
+    bq_project = Variable.get("bq_project", default_var="smiling-parser-462606-v9")
     bq_dataset = Variable.get("bq_dataset", default_var=f"flight_data_{env}")
     tables = Variable.get("tables", deserialize_json=True)
 
@@ -70,9 +70,9 @@ with DAG(
         },
         "environment_config": {
             "execution_config": {
-                "service_account": "789003181755-compute@developer.gserviceaccount.com",
-                "network_uri": "projects/plucky-climate-458008-u8/global/networks/default",
-                "subnetwork_uri": "projects/plucky-climate-458008-u8/regions/us-central1/subnetworks/default",
+                "service_account": "402963498662-compute@developer.gserviceaccount.com",
+                "network_uri": "projects/smiling-parser-462606-v9/global/networks/default",
+                "subnetwork_uri": "projects/smiling-parser-462606-v9/regions/us-central1/subnetworks/default",
             }
         },
     }
@@ -81,7 +81,7 @@ with DAG(
         task_id="run_spark_job_on_dataproc_serverless",
         batch=batch_details,
         batch_id=batch_id,
-        project_id="plucky-climate-458008-u8",
+        project_id="smiling-parser-462606-v9",
         region="us-central1",
         gcp_conn_id="google_cloud_default",
     )
