@@ -43,7 +43,7 @@ with DAG(
     file_sensor = GCSObjectExistenceSensor(
         task_id="check_file_arrival",
         bucket=gcs_bucket,
-        object=f"flight-booking-analysis/source-{env}/flight_booking.csv",  # Full file path in GCS
+        object=f"flight_booking_analysis/source-{env}/flight_booking.csv",  # Full file path in GCS
         google_cloud_conn_id="google_cloud_default",  # GCP connection
         timeout=300,  # Timeout in seconds
         poke_interval=30,  # Time between checks
@@ -53,7 +53,7 @@ with DAG(
     # Task 2: Submit PySpark job to Dataproc Serverless
     batch_details = {
         "pyspark_batch": {
-            "main_python_file_uri": f"gs://{gcs_bucket}/flight-booking-analysis/spark-job/spark_transformation_job.py",  # Main Python file
+            "main_python_file_uri": f"gs://{gcs_bucket}/flight_booking_analysis/spark-job/spark_transformation_job.py",  # Main Python file
             "python_file_uris": [],  # Python WHL files
             "jar_file_uris": [],  # JAR files
             "args": [
