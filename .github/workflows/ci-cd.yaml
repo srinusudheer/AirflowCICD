@@ -26,7 +26,7 @@ jobs:
 
       - name: Upload variable JSON to GCS
         run: |
-          gsutil cp variables/dev/variables.json gs://us-central1-airflow-dev-39429e7e-bucket/data/dev/variables.json
+          gsutil cp variables/dev/variables.json gs://us-central1-airflow-dev-6c02a0c8-bucket/data/dev/variables.json
 
       - name: Import variables into Airflow-dev
         run: |
